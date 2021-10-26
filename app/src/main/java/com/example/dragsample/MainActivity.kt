@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -40,7 +39,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DragSampleTheme {
-                val uiState by viewModel.uiStateLiveData.asFlow().collectAsState(initial = viewModel.uiState)
+                val uiState by viewModel.uiStateLiveData.asFlow()
+                    .collectAsState(initial = viewModel.uiState)
                 // A surface container using the 'background' color from the theme
                 Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
                     BottomNavMenu(uiState, viewModel)
@@ -63,7 +63,7 @@ fun BottomNavPortrait(uiState: BottomNavUiState, uiActions: BottomNavUiActions) 
         } else {
             extraLayoutHeight
         }
-        onDispose {  }
+        onDispose { }
     }
 
     val snapTransition = updateTransition(targetState = fingerUp, label = "")
@@ -126,20 +126,20 @@ fun BottomNavPortrait(uiState: BottomNavUiState, uiActions: BottomNavUiActions) 
             Modifier
         }
 
-        MainLayout()
+        MainLayout(uiState.time)
         ExtraLayout(extraLayoutModifier)
     }
 }
 
 @Composable
-private fun MainLayout() {
+private fun MainLayout(timeText: String) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = Color.Black.copy(alpha = 0.38f))
             .padding(bottom = 24.dp)
     ) {
-        val (arrow, firstIcon, firstIconText, secondIcon, secondIconText, thirdIcon, thirdIconText, fourthIcon, fourthIconText) = createRefs()
+        val (time, arrow, firstIcon, firstIconText, secondIcon, secondIconText, thirdIcon, thirdIconText, fourthIcon, fourthIconText) = createRefs()
 
         Box(modifier = Modifier
             .constrainAs(arrow) {
@@ -154,6 +154,10 @@ private fun MainLayout() {
                 contentDescription = ""
             )
         }
+
+        Text(text = timeText, color = Color.White, modifier = Modifier.constrainAs(time) {
+            start.linkTo(parent.start)
+        })
 
         FloatingActionButton(
             modifier = Modifier
