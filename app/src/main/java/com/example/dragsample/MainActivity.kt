@@ -34,14 +34,13 @@ val bottom_nav_icon_size = 56.dp
 
 class MainActivity : ComponentActivity() {
 
-    val viewModel = BaseViewModel()
+    private val viewModel = DragViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             DragSampleTheme {
                 val uiState by viewModel.uiStateLiveData.asFlow()
                     .collectAsState(initial = viewModel.uiState)
-                // A surface container using the 'background' color from the theme
                 Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
                     BottomNavMenu(uiState, viewModel)
                 }

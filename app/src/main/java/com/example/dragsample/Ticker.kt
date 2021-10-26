@@ -1,14 +1,15 @@
-package com.example.dragsample.ui
+package com.example.dragsample
 
 import android.os.Handler
+import android.os.Looper
 
 class Ticker(private val delay: Long = 1000L) {
 
-    private val durationHandler: Handler = Handler()
+    private val durationHandler: Handler = Handler(Looper.getMainLooper())
     private var durationUpdater: Runnable? = null
 
     fun start(action: () -> Unit) {
-        durationUpdater = object : Runnable {
+        object : Runnable {
             override fun run() {
                 action()
 
@@ -16,10 +17,6 @@ class Ticker(private val delay: Long = 1000L) {
             }
         }.apply {
             run()
-        }
-    }
-
-    fun stop() {
-        durationUpdater?.let { durationHandler.removeCallbacks(it) }
+        }.also { durationUpdater = it }
     }
 }

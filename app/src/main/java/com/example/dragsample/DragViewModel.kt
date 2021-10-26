@@ -1,27 +1,15 @@
 package com.example.dragsample
 
 import android.annotation.SuppressLint
-import androidx.compose.runtime.Stable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.dragsample.ui.Ticker
 
-
-@Stable
-data class ItemData(
-    val title: String,
-    val key: String,
-    val isLocked: Boolean = false,
-    val url: String = ""
-)
-
-class BaseViewModel : ViewModel(), BottomNavUiActions {
-
-    val ticker: Ticker = Ticker()
+class DragViewModel : ViewModel(), BottomNavUiActions {
+    private val ticker: Ticker = Ticker()
     val uiState: BottomNavUiState
         get() = uiStateLiveData.value ?: throw IllegalStateException("UiState is null")
-    protected val _uiStateLiveData: MutableLiveData<BottomNavUiState> = MutableLiveData()
+    private val _uiStateLiveData: MutableLiveData<BottomNavUiState> = MutableLiveData()
     val uiStateLiveData: LiveData<BottomNavUiState> get() = _uiStateLiveData
 
     init {
@@ -43,7 +31,7 @@ class BaseViewModel : ViewModel(), BottomNavUiActions {
     }
 
     @SuppressLint("RestrictedApi")
-    protected fun updateUiState(update: (BottomNavUiState) -> BottomNavUiState) {
+    fun updateUiState(update: (BottomNavUiState) -> BottomNavUiState) {
         uiStateLiveData.value?.let {
             val newModel = update(it)
 
@@ -60,7 +48,7 @@ class BaseViewModel : ViewModel(), BottomNavUiActions {
     }
 
 
-    fun String.toDurationString(): String {
+    private fun String.toDurationString(): String {
         val durationInSeconds = this.toInt()
         var min = (durationInSeconds / 60).toString()
         var secs = (durationInSeconds % 60).toString()
